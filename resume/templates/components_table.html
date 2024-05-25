@@ -1,0 +1,15 @@
+
+{% block body %}
+{% for component in component_list %}
+<tr>
+    <td>{{ component.name }}</td>
+    <td>{{ component.lot_number }}</td>
+    <td class="{% if component.expiration_date < current_date %}text-danger{% endif %}">
+        {{ component.expiration_date }}
+    </td>
+    <td>{{ component.crt_part_number }}</td>
+</tr>
+{% endfor %}
+
+
+{% endblock %}

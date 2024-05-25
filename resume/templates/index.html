@@ -3,69 +3,109 @@
     Component database
 {% endblock %}
 
+
 {% block body %}
 <div class="container text-center">
-  <div class="row">
-    <div class="col-7">
-      <h1>All Items</h1>
+    <div class="row">
+        <div class="col-7">
+            <h1>All Items</h1>
 
+            <!-- Display Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="ms-4 me-4 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-      <!-- Display Messages -->
-      {% if messages %}
-      {% for message in messages %}
-          <div class="alert alert-{{ message.tags }}">
-              {{ message }}
-          </div>
-      {% endfor %}
-      {% endif %}
+            <input id="search-input" type="text" class="form-control mt-3 mb-3" placeholder="Search components">
 
-
-
-
-
-      <div class="table table-striped mt-4 mb-4 me-4 ms-4 rounded-3">
-        <!-- table header -->
-
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Component Name</th>
-              <th scope="col">Lot #</th>
-              <th scope="col">Exp Date</th>
-              <th scope="col">CRT Part #</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for component in object_list %}
-            <tr class="table-dark">
-              <th scope="row">{{ component.name | upper }}</th>
-              <td>{{ component.lot_number | upper }}</td>
-              <td>{{ component.expiration_date }}</td>
-              <td>{{ component.crt_part_number | upper }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="col-5">
-      <div class="card bg-dark text-light border-dark mt-4 mb-4 me-1 ms-4 rounded-3" style="">
-        <div class="card-header">
-          <h5 class="card-title">Add Component</h5>
+            <div class="table-responsive">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">Component Name</th>
+                            <th scope="col">Lot #</th>
+                            <th scope="col">Exp Date</th>
+                            <th scope="col">CRT Part #</th>
+                        </tr>
+                    </thead>
+                    <tbody id="components-table-body">
+                        {% for component in object_list %}
+                            <tr class="table-dark">
+                                <th scope="row">{{ component.name | upper }}</th>
+                                <td>{{ component.lot_number | upper }}</td>
+                                <td class="{% if component.expiration_date < current_date %}text-danger{% endif %}">
+                                    {{ component.expiration_date }}
+                                </td>
+                                <td>{{ component.crt_part_number | upper }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="post" enctype="multipart/form-data" action="{% url 'add_component' %}">
-              {% csrf_token %}
-              {{ form.as_p }}
-              
-              <button type="submit" class="btn btn-primary rounded-3">Submit</button>
-            </form>
+        <div class="col-5">
+            <div class="card bg-dark text-light border-dark mt-4 mb-4 me-1 ms-4 rounded-3">
+                <div class="card-header">
+                    <h5 class="card-title">Add Component</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'add_component' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary rounded-3">Submit</button>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
-
     </div>
-  </div>
 </div>
-    
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.transition = 'opacity 1s';
+                alert.style.opacity = 0;
+                setTimeout(function() {
+                    alert.remove();
+                }, 1000);
+            }, 10000); // 10 seconds
+        });
+
+        // AJAX search
+        document.getElementById('search-input').addEventListener('keyup', function() {
+            var query = this.value.trim();
+            if (query !== "") {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '{% url "ajax_search" %}?q=' + encodeURIComponent(query), true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        document.getElementById('components-table-body').innerHTML = JSON.parse(xhr.responseText).html;
+                    }
+                };
+                xhr.send();
+            } else {
+                // Clear the table or reset it to show all items when input is empty
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '{% url "ajax_search" %}?q=', true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        document.getElementById('components-table-body').innerHTML = JSON.parse(xhr.responseText).html;
+                    }
+                };
+                xhr.send();
+            }
+        });
+    });
+</script>
+
         
 {% endblock %}
