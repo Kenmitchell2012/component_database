@@ -29,11 +29,15 @@ class Index(ListView):
     template_name = 'index.html'
     context_object_name = 'component_list'
 
+    def get_queryset(self):
+        return Component.objects.all().order_by('-date_added')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['component_list'] = Component.objects.all()
         context['form'] = PostForm()
         context['current_date'] = timezone.now().date()
+        context['component_count'] = Component.objects.count()
         return context
 
 class AddComponent(CreateView):

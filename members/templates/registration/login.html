@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+    Sign In | Register
+{% endblock %}
+
+{% block body %}
+<div class="container text-center">
+    <div class="row">
+        <div class="col-7">
+            <div class="form-group">
+                <h1>Sign In</h1>
+                <div class="card bg-dark mb-3">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'signin' %}">
+                            {% csrf_token %}
+                            <div class="form-floating mb-3">
+                                {{ signin_form.username }}
+                                <label for="{{ signin_form.username.id_for_label }}">Email address</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ signin_form.password }}
+                                <label for="{{ signin_form.password.id_for_label }}">Password</label>
+                            </div>
+                            <button type="submit" name="signin" class="btn btn-primary rounded-3">Sign In</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="form-group">
+                <h1>Register</h1>
+                <div class="card bg-dark mb-3">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="form-floating mb-3">
+                                {{ register_form.username }}
+                                <label for="{{ register_form.username.id_for_label }}">Username</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ register_form.password1 }}
+                                <label for="{{ register_form.password1.id_for_label }}">Password</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ register_form.password2 }}
+                                <label for="{{ register_form.password2.id_for_label }}">Confirm Password</label>
+                            </div>
+                            <button type="submit" name="register" class="btn btn-primary rounded-3">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

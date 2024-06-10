@@ -20,9 +20,21 @@
           <li class="nav-item">
             <a class="nav-link" href="#">Lab Supplies</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-link nav-link custom-red">
+                      <i class="fa-solid fa-right-from-bracket"></i>
+                      Logout
+                  </button>
+              </form>
           </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'auth' %}">Login</a>
+          </li>
+          {% endif %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
             <div class="dropdown-menu">
@@ -34,10 +46,16 @@
             </div>
           </li>
         </ul>
-        <form class="d-flex">
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+              <i class="fa-lg fa-regular fa-address-card"></i>
+          </a>
+          <p>Hi, {{ user.username }}</p>
+        </li>
+        <!-- <form class="d-flex">
           <input class="form-control me-sm-2" type="search" placeholder="Search">
           <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        </form> -->
       </div>
     </div>
   </nav>

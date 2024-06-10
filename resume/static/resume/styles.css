@@ -4,5 +4,9 @@
 }
 
 h1 {
-    color: aqua;
+    color: rgb(236, 0, 0);
+}
+
+.table-header-custom {
+    background-color: black; /* Darker shade for header */
 }
