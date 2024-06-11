@@ -52,3 +52,12 @@ class AddComponent(CreateView):
         component_name = form.instance.name
         messages.success(self.request, f'Component "{component_name}" added successfully!')
         return response
+    
+class EditComponent(CreateView):
+    pass
+
+class DeleteComponent(CreateView):
+    pass
+
+class ComponentDetail(CreateView):
+    pass

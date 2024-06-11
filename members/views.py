@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from .forms import SignInForm, RegisterForm
 from django.urls import reverse
 
+
 def sign_in_view(request):
     signin_form = SignInForm()
     if request.method == 'POST' and 'signin' in request.POST:
@@ -14,7 +15,10 @@ def sign_in_view(request):
             if user is not None:
                 login(request, user)
                 return redirect(reverse('index'))
+        else:
+            print(signin_form.errors)  # Print form errors to the console for debugging
     return render(request, 'registration/login.html', {'signin_form': signin_form})
+
 
 def register_view(request):
     register_form = RegisterForm()

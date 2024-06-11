@@ -7,7 +7,7 @@
       <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'index' %}">Home
+            <a class="nav-link active" href="{% url 'index' %}">Home 
               <span class="visually-hidden">(current)</span>
             </a>
           </li>
@@ -48,9 +48,10 @@
         </ul>
         <li class="nav-item">
           <a class="nav-link" href="#">
-              <i class="fa-lg fa-regular fa-address-card"></i>
+              <i class="fa-lg fa-regular fa-address-card">
+                Hi, {{ user.username }}
+              </i>
           </a>
-          <p>Hi, {{ user.username }}</p>
         </li>
         <!-- <form class="d-flex">
           <input class="form-control me-sm-2" type="search" placeholder="Search">

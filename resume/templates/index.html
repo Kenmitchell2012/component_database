@@ -31,6 +31,7 @@
                             <th scope="col">Lot #</th>
                             <th scope="col">Exp Date</th>
                             <th scope="col">CRT Part #</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="components-table-body">
@@ -42,6 +43,24 @@
                                     {{ component.expiration_date | date:"m/d/Y" }}
                                 </td>
                                 <td>{{ component.crt_part_number | upper }}</td>
+                                 
+                                <td>
+                                    {% if user == component.user %}
+                                        <div class="d-flex justify-content-between">
+                                            
+                                            <a href="{% url 'component_detail' component.id %}" class="">
+                                                <i class="fa-solid fa-eye fa-lg"></i>
+                                            </a>
+                                            <a href="{% url 'edit_component' component.id %}" class="">
+                                                
+                                                <i class="fa-solid fa-edit fa-lg"></i>
+                                            </a>
+                                            <a href="{% url 'delete_component' component.id %}" class="text-danger">        
+                                                <i class="fa-solid fa-trash fa-lg"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

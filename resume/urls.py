@@ -8,5 +8,8 @@ urlpatterns = [
     path("", views.Index.as_view(), name="index"),
     path('add/', views.AddComponent.as_view(), name='add_component'),
     path('ajax/search/', ajax_search, name='ajax_search'),
+    path('edit/<int:pk>/', views.EditComponent.as_view(), name='edit_component'),
+    path('delete/<int:pk>/', views.DeleteComponent.as_view(), name='delete_component'),
+    path('<int:pk>/', views.ComponentDetail.as_view(), name='component_detail'),
 
 ]
