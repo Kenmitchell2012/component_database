@@ -46,16 +46,16 @@
                                  
                                 <td>
                                     {% if user == component.user %}
-                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex gap-1 justify-content-between">
                                             
-                                            <a href="{% url 'component_detail' component.id %}" class="">
+                                            <a href="{% url 'component_detail' component.id %}" class="view-component" data-bs-toggle="modal" data-bs-target="#componentModal" data-name="{{ component.name }}" data-lot="{{ component.lot_number }}" data-exp="{{ component.expiration_date }}" data-part="{{ component.crt_part_number }}">
                                                 <i class="fa-solid fa-eye fa-lg"></i>
                                             </a>
                                             <a href="{% url 'edit_component' component.id %}" class="">
                                                 
                                                 <i class="fa-solid fa-edit fa-lg"></i>
                                             </a>
-                                            <a href="{% url 'delete_component' component.id %}" class="text-danger">        
+                                            <a href="{% url 'delete_component' component.id %}">        
                                                 <i class="fa-solid fa-trash fa-lg"></i>
                                             </a>
                                         </div>
@@ -83,6 +83,27 @@
         </div>
     </div>
 </div>
+
+<!-- modal -->
+<div class="modal fade" id="componentModal" tabindex="-1" role="dialog" aria-labelledby="componentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="componentModalLabel">Component Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Content will be loaded here via JavaScript -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
 
 <script>
@@ -127,5 +148,27 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var componentModal = document.getElementById('componentModal');
+      componentModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var name = button.getAttribute('data-name');
+        var lot = button.getAttribute('data-lot');
+        var exp = button.getAttribute('data-exp');
+        var part = button.getAttribute('data-part');
+        
+        // Update the modal's content.
+        var modalBody = componentModal.querySelector('.modal-body');
+        modalBody.innerHTML = `
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Lot Number:</strong> ${lot}</p>
+          <p><strong>Expiration Date:</strong> ${exp}</p>
+          <p><strong>CRT Part Number:</strong> ${part}</p>
+        `;
+      });
+    });
+  </script>
+  
         
 {% endblock %}

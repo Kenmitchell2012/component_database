@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from .models import Component
-from .forms import PostForm
+from .forms import PostForm, EditForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils import timezone
@@ -19,9 +19,10 @@ def ajax_search(request):
             Q(crt_part_number__icontains=query)
         )
     else:
-        components = Component.objects.all()
+        components = Component.objects.all()   
     html = render_to_string('components_table.html', {'component_list': components})
     return JsonResponse({'html': html})
+
 
 
 class Index(ListView):
@@ -53,11 +54,26 @@ class AddComponent(CreateView):
         messages.success(self.request, f'Component "{component_name}" added successfully!')
         return response
     
-class EditComponent(CreateView):
-    pass
+class UpdateComponent(UpdateView):
+    model = Component
+    form_class = EditForm
+    template_name = 'edit_component.html'
+    success_url = reverse_lazy('index')
 
-class DeleteComponent(CreateView):
-    pass
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        component_name = form.instance.name
+        messages.success(self.request, f'Component "{component_name}" updated successfully!')
+        return response
+
+class DeleteComponent(DeleteView):
+    model = Component
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DeleteComponent, self).get_context_data(*args, **kwargs)
+        return context
 
 class ComponentDetail(CreateView):
     pass

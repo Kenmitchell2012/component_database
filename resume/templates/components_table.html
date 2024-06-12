@@ -8,6 +8,23 @@
         {{ component.expiration_date }}
     </td>
     <td>{{ component.crt_part_number }}</td>
+    <td>
+        {% if user == component.user %}
+            <div class="d-flex gap-1 justify-content-between">
+                
+                <a href="{% url 'component_detail' component.id %}" class="">
+                    <i class="fa-solid fa-eye fa-lg"></i>
+                </a>
+                <a href="{% url 'edit_component' component.id %}" class="">
+                    
+                    <i class="fa-solid fa-edit fa-lg"></i>
+                </a>
+                <a href="{% url 'delete_component' component.id %}">        
+                    <i class="fa-solid fa-trash fa-lg"></i>
+                </a>
+            </div>
+        {% endif %}
+    </td>
 </tr>
 {% endfor %}
 

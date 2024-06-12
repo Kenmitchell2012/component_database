@@ -14,3 +14,30 @@ h1 {
 .custom-red {
     color: red;
 }
+
+.text-light {
+    color: #ffffff !important;
+}
+
+
+
+.card-header {
+    background-color: #444; /* Slightly lighter than the card body for contrast */
+    border-bottom: 1px solid #555;
+}
+
+.card-body {
+    padding: 1.5rem; /* Increased padding for better spacing */
+}
+
+.btn {
+    min-width: 100px; /* Ensure buttons have a consistent minimum width */
+}
+
+h1, .card-title {
+    color: #fff;
+}
+
+h1 {
+    margin-bottom: 1rem;
+}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit Component
+{% endblock %}
+
+{% block body %}
+<div class="container text-center">
+    <div class="row">
+        <div class="col-7 mx-auto">
+            <div class="form-group">
+                <h1>Edit Component</h1>
+                <div class="card bg-dark mb-3">
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="submit" class="btn btn-primary rounded-3">Save</button>
+                                <a href="{% url 'index' %}" class="btn btn-secondary rounded-3">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
