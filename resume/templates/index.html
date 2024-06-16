@@ -24,7 +24,7 @@
             <input id="search-input" type="text" class="form-control mt-3 mb-3" placeholder="Search from {{component_count}} components">
 
             <div class="table-responsive">
-                <table class="table table-hover table-dark">
+                <table class="table table-striped table-bordered table-hover table-dark">
                     <thead class="table-header-custom">
                         <tr>
                             <th scope="col">Component Name</th>
@@ -35,7 +35,8 @@
                         </tr>
                     </thead>
                     <tbody id="components-table-body">
-                        {% for component in object_list %}
+                        {% include 'components_table.html' %}
+                        <!-- {% for component in object_list %}
                             <tr class="table-dark">
                                 <th scope="row">{{ component.name | upper }}</th>
                                 <td>{{ component.lot_number | upper }}</td>
@@ -62,7 +63,7 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                        {% endfor %}
+                        {% endfor %} -->
                     </tbody>
                 </table>
             </div>
@@ -73,16 +74,25 @@
                     <h5 class="card-title">Add Component</h5>
                 </div>
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" action="{% url 'add_component' %}">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary rounded-3">Add</button>
-                    </form>
+                    {% if user.is_authenticated %}
+
+                        <form method="post" enctype="multipart/form-data" action="{% url 'add_component' %}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary rounded-3">Add</button>
+                        </form>
+                    {% else %}
+
+                        <p>You must be logged in to add a component.</p>
+                        <a href="{% url 'auth' %}" class="btn btn-primary rounded-3">Sign In</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<input type="hidden" id="current-date" value="{{ current_date|date:'Y-m-d' }}">
 
 <!-- modal -->
 <div class="modal fade" id="componentModal" tabindex="-1" role="dialog" aria-labelledby="componentModalLabel" aria-hidden="true">
@@ -107,7 +117,9 @@
 
 
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Handling alert messages fade out
         var alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
             setTimeout(function() {
@@ -122,30 +134,21 @@
         // AJAX search
         document.getElementById('search-input').addEventListener('keyup', function() {
             var query = this.value.trim();
-            if (query !== "") {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', '{% url "ajax_search" %}?q=' + encodeURIComponent(query), true);
-                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        document.getElementById('components-table-body').innerHTML = JSON.parse(xhr.responseText).html;
-                    }
-                };
-                xhr.send();
-            } else {
-                // Clear the table or reset it to show all items when input is empty
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', '{% url "ajax_search" %}?q=', true);
-                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        document.getElementById('components-table-body').innerHTML = JSON.parse(xhr.responseText).html;
-                    }
-                };
-                xhr.send();
-            }
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{% url "ajax_search" %}?q=' + encodeURIComponent(query), true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('components-table-body').innerHTML = response.html;
+                    document.getElementById('current-date').value = response.current_date;
+                }
+            };
+            xhr.send();
         });
     });
+
+        
 </script>
 
 <script>

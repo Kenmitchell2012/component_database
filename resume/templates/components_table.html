@@ -1,6 +1,6 @@
 
 {% block body %}
-{% for component in component_list %}
+<!-- {% for component in component_list %}
 <tr>
     <td>{{ component.name }}</td>
     <td>{{ component.lot_number }}</td>
@@ -26,7 +26,37 @@
         {% endif %}
     </td>
 </tr>
+{% endfor %} -->
+
+{% for component in component_list %}
+<tr class="table-dark">
+    <th scope="row">{{ component.name | upper }}</th>
+    <td>{{ component.lot_number | upper }}</td>
+    <td class="{% if component.expiration_date|date:'m/d/Y' <= current_date %}text-danger{% endif %}">
+        {{ component.expiration_date | date:"m/d/Y" }}
+    </td>
+    <td>{{ component.crt_part_number | upper }}</td>
+    <td>
+        {% if user == component.user %}
+            <div class="d-flex gap-1 justify-content-between">
+                <a href="{% url 'component_detail' component.id %}" class="">
+                    <i class="fa-solid fa-eye fa-lg"></i>
+                </a>
+                <a href="{% url 'edit_component' component.id %}" class="">
+                    <i class="fa-solid fa-edit fa-lg"></i>
+                </a>
+                <a href="{% url 'delete_component' component.id %}">
+                    <i class="fa-solid fa-trash fa-lg"></i>
+                </a>
+            </div>
+        {% endif %}
+    </td>
+</tr>
 {% endfor %}
+
+
+
+
 
 
 {% endblock %}

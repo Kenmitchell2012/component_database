@@ -9,6 +9,22 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .models import Component
 from django.db.models import Q
+from datetime import datetime
+
+# def ajax_search(request):
+#     query = request.GET.get('q', '').strip()
+#     if query:
+#         components = Component.objects.filter(
+#             Q(name__icontains=query) |
+#             Q(lot_number__icontains=query) |
+#             Q(crt_part_number__icontains=query)
+#         )
+#     else:
+#         components = Component.objects.all()   
+#     html = render_to_string('components_table.html', {'component_list': components})
+#     return JsonResponse({'html': html})
+
+
 
 def ajax_search(request):
     query = request.GET.get('q', '').strip()
@@ -19,8 +35,17 @@ def ajax_search(request):
             Q(crt_part_number__icontains=query)
         )
     else:
-        components = Component.objects.all()   
-    html = render_to_string('components_table.html', {'component_list': components})
+        components = Component.objects.all()
+    
+    # Prepare the context with the necessary data
+    current_date = datetime.now()
+    context = {
+        'component_list': components,
+        'current_date': current_date,
+        'user': request.user
+    }
+    
+    html = render_to_string('components_table.html', context)
     return JsonResponse({'html': html})
 
 

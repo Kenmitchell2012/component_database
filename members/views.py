@@ -40,5 +40,7 @@ def auth_view(request):
     context = {
         'signin_form': signin_form,
         'register_form': register_form,
+        'is_login_page': True  # Add this line
     }
     return render(request, 'registration/login.html', context)
+
