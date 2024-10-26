@@ -38,7 +38,7 @@ def ajax_search(request):
         components = Component.objects.all()
     
     # Prepare the context with the necessary data
-    current_date = datetime.now()
+    current_date = datetime.now().strftime('%Y-%m-%d')
     context = {
         'component_list': components,
         'current_date': current_date,
@@ -62,7 +62,7 @@ class Index(ListView):
         context = super().get_context_data(**kwargs)
         context['component_list'] = Component.objects.all()
         context['form'] = PostForm()
-        context['current_date'] = timezone.now().date()
+        context['current_date'] = timezone.now().strftime('%m/%d/%Y')
         context['component_count'] = Component.objects.count()
         return context
 

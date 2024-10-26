@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import SignInForm, RegisterForm
 from django.urls import reverse
+from django.contrib import messages
 
 
 def sign_in_view(request):
@@ -12,6 +13,7 @@ def sign_in_view(request):
             username = signin_form.cleaned_data.get('username')
             password = signin_form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
+            messages.success(request, f'You are now logged in as {user.username}')  
             if user is not None:
                 login(request, user)
                 return redirect(reverse('index'))
@@ -29,6 +31,7 @@ def register_view(request):
             username = register_form.cleaned_data.get('username')
             password = register_form.cleaned_data.get('password1')
             user = authenticate(request, username=username, password=password)
+            messages.success(request, f'You are now registered and logged in as {user.username}')
             if user is not None:
                 login(request, user)
                 return redirect(reverse('index'))
