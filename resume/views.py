@@ -33,9 +33,9 @@ def ajax_search(request):
             Q(name__icontains=query) |
             Q(lot_number__icontains=query) |
             Q(crt_part_number__icontains=query)
-        )
+        ).order_by('-date_added')  # Sort by date_added, descending
     else:
-        components = Component.objects.all()
+        components = Component.objects.all().order_by('-date_added')  # Sort all components
     
     # Prepare the context with the necessary data
     current_date = datetime.now().strftime('%Y-%m-%d')
@@ -47,7 +47,6 @@ def ajax_search(request):
     
     html = render_to_string('components_table.html', context)
     return JsonResponse({'html': html})
-
 
 
 class Index(ListView):
@@ -74,6 +73,7 @@ class AddComponent(CreateView):
     success_url = reverse_lazy('index')
 
     def form_valid(self, form):
+        form.instance.user = self.request.user # get the user
         response = super().form_valid(form)
         component_name = form.instance.name
         messages.success(self.request, f'Component "{component_name}" added successfully!')

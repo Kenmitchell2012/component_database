@@ -14,3 +14,7 @@ h1 {
 .text-light {
     color: #ffffff !important;
 }
+
+#heading {
+    color: #ffffff; /* White text for header */
+}

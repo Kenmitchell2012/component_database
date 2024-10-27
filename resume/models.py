@@ -3,10 +3,10 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
-DEFAULT_USER_ID = 2
+# DEFAULT_USER_ID = 2
 
 class Component(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=DEFAULT_USER_ID)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     lot_number = models.CharField(max_length=200, unique=True)
     expiration_date = models.DateField()

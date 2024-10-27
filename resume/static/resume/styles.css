@@ -10,3 +10,7 @@ h1 {
 .table-header-custom {
     background-color: black; /* Darker shade for header */
 }
+
+#heading {
+    color: #ffffff; /* White text for header */
+}
