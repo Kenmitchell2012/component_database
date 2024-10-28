@@ -49,8 +49,15 @@
                         <i class="fa-solid fa-trash fa-lg" style="color: red;"></i>
                     </a>
                 </div>
+            {% else %}
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'component_detail' component.id %}" class="view-component" data-bs-toggle="modal" data-bs-target="#componentModal" data-name="{{ component.name }}" data-lot="{{ component.lot_number }}" data-exp="{{ component.expiration_date }}" data-part="{{ component.crt_part_number }}">
+                        <i class="fa-solid fa-eye fa-lg"></i> View
+                    </a>
+                </div>
             {% endif %}
         </td>
+        
     </tr>
 {% endfor %}
 
