@@ -1,0 +1,47 @@
+.table-responsive {
+    max-height: 1200px; /* Set the desired height */
+    overflow-y: auto;
+}
+
+h1 {
+    color: #e9e9e9;
+}
+
+.table-header-custom {
+    background-color: black; /* Darker shade for header */
+}
+
+.custom-red {
+    color: red;
+}
+
+.text-light {
+    color: #ffffff !important;
+}
+
+
+
+.card-header {
+    background-color: #444; /* Slightly lighter than the card body for contrast */
+    border-bottom: 1px solid #555;
+}
+
+.card-body {
+    padding: 1.5rem; /* Increased padding for better spacing */
+}
+
+.btn {
+    min-width: 100px; /* Ensure buttons have a consistent minimum width */
+}
+
+h1, .card-title {
+    color: #fff;
+}
+
+h1 {
+    margin-bottom: 1rem;
+}
+
+#heading {
+    color: #ffffff; /* White text for header */
+}

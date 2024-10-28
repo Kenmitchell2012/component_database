@@ -1,0 +1,16 @@
+.table-responsive {
+    max-height: 1000px; /* Set the desired height */
+    overflow-y: auto;
+}
+
+h1 {
+    color: rgb(236, 0, 0);
+}
+
+.table-header-custom {
+    background-color: black; /* Darker shade for header */
+}
+
+#heading {
+    color: #ffffff; /* White text for header */
+}

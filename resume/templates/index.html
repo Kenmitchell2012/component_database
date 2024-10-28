@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Component database
+{% endblock %}
+
+
+{% block body %}
+<div class="container text-center">
+    <div class="row">
+        <div class="col-7">
+            <h1 class="text-light p-3" id="heading">All Items</h1>
+            <!-- Display Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="ms-4 me-4 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <input id="search-input" type="text" class="form-control mt-3 mb-3" placeholder="Search from {{component_count}} components">
+            <input type="hidden" id="current-date" value="{{ current_date|date:'Y-m-d' }}">
+           
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover table-dark">
+                    <thead class="table-header-custom">
+                        <tr>
+                            <th scope="col">Component Name</th>
+                            <th scope="col">Lot #</th>
+                            <th scope="col">Exp Date</th>
+                            <th scope="col">CRT Part #</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="components-table-body">
+                        {% include 'components_table.html' %}
+                        <!-- {% for component in object_list %}
+                            <tr class="table-dark">
+                                <th scope="row">{{ component.name | upper }}</th>
+                                <td>{{ component.lot_number | upper }}</td>
+                                <td class="{% if component.expiration_date < current_date %}text-danger{% endif %}">
+                                    {{ component.expiration_date | date:"m/d/Y" }}
+                                </td>
+                                <td>{{ component.crt_part_number | upper }}</td>
+                                 
+                                <td>
+                                    {% if user == component.user %}
+                                        <div class="d-flex gap-1 justify-content-between">
+                                            
+                                            <a href="{% url 'component_detail' component.id %}" class="view-component" data-bs-toggle="modal" data-bs-target="#componentModal" data-name="{{ component.name }}" data-lot="{{ component.lot_number }}" data-exp="{{ component.expiration_date }}" data-part="{{ component.crt_part_number }}">
+                                                <i class="fa-solid fa-eye fa-lg"></i>
+                                            </a>
+                                            <a href="{% url 'edit_component' component.id %}" class="">
+                                                
+                                                <i class="fa-solid fa-edit fa-lg"></i>
+                                            </a>
+                                            <a href="{% url 'delete_component' component.id %}">        
+                                                <i class="fa-solid fa-trash fa-lg"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %} -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card bg-dark text-light border-dark mt-4 mb-4 me-1 ms-4 rounded-3">
+                <div class="card-header">
+                    <h5 class="card-title">Add Component</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+
+                        <form method="post" enctype="multipart/form-data" action="{% url 'add_component' %}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary rounded-3">Add</button>
+                        </form>
+                    {% else %}
+
+                        <p>You must be logged in to add a component.</p>
+                        <a href="{% url 'auth' %}" class="btn btn-primary rounded-3">Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- modal -->
+<div class="modal fade" id="componentModal" tabindex="-1" role="dialog" aria-labelledby="componentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="componentModalLabel">Component Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Content will be loaded here via JavaScript -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handling alert messages fade out
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.transition = 'opacity 1s';
+                alert.style.opacity = 0;
+                setTimeout(function() {
+                    alert.remove();
+                }, 1000);
+            }, 10000); // 10 seconds
+        });
+
+        // AJAX search
+        document.getElementById('search-input').addEventListener('keyup', function() {
+            var query = this.value.trim();
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{% url "ajax_search" %}?q=' + encodeURIComponent(query), true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('components-table-body').innerHTML = response.html;
+                    document.getElementById('current-date').value = response.current_date;
+                }
+            };
+            xhr.send();
+        });
+    });
+
+        
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var componentModal = document.getElementById('componentModal');
+      componentModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var name = button.getAttribute('data-name');
+        var lot = button.getAttribute('data-lot');
+        var exp = button.getAttribute('data-exp');
+        var part = button.getAttribute('data-part');
+        
+        // Update the modal's content.
+        var modalBody = componentModal.querySelector('.modal-body');
+        modalBody.innerHTML = `
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Lot Number:</strong> ${lot}</p>
+          <p><strong>Expiration Date:</strong> ${exp}</p>
+          <p><strong>CRT Part Number:</strong> ${part}</p>
+        `;
+      });
+    });
+  </script>
+  
+        
+{% endblock %}
